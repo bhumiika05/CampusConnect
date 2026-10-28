@@ -4,6 +4,8 @@
 > *Track: Campus Life, Upgraded*  
 > *Full-Stack Architecture: Flutter + Dart + Serverpod + PostgreSQL + Serverpod Cloud*
 
+[![GitHub Repo](https://img.shields.io/badge/GitHub-bhumiika05%2FCampusConnect-181717?logo=github)](https://github.com/bhumiika05/CampusConnect)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-10B981?logo=githubpages)](https://bhumiika05.github.io/CampusConnect/)
 [![Dart](https://img.shields.io/badge/Dart-3.13.7-0175C2?logo=dart)](https://dart.dev)
 [![Flutter](https://img.shields.io/badge/Flutter-3.47.8-02569B?logo=flutter)](https://flutter.dev)
 [![Serverpod](https://img.shields.io/badge/Serverpod-4.0.4-2D3748)](https://serverpod.dev)

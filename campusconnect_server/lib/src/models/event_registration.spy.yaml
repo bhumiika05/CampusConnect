@@ -1,0 +1,10 @@
+class: EventRegistration
+table: event_registration
+fields:
+  studentId: int
+  studentName: String
+  studentEmail: String
+  eventId: int
+  eventTitle: String
+  status: String
+  createdAt: DateTime

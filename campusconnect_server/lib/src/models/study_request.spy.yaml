@@ -1,0 +1,13 @@
+class: StudyRequest
+table: study_request
+fields:
+  senderId: int
+  senderName: String
+  senderBranch: String
+  senderAvatarUrl: String?
+  recipientId: int
+  recipientName: String
+  message: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime

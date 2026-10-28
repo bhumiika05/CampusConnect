@@ -1,0 +1,15 @@
+class: StudentProfile
+table: student_profile
+fields:
+  userId: int?
+  name: String
+  email: String
+  branch: String
+  academicYear: String
+  bio: String
+  avatarUrl: String?
+  skills: List<String>
+  interests: List<String>
+  isOrganizer: bool
+  createdAt: DateTime
+  updatedAt: DateTime

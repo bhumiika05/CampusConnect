@@ -1,0 +1,15 @@
+class: ProjectListing
+table: project_listing
+fields:
+  title: String
+  description: String
+  creatorId: int
+  creatorName: String
+  creatorBranch: String
+  techStack: List<String>
+  requiredSkills: List<String>
+  category: String
+  totalPositions: int
+  openPositions: int
+  status: String
+  createdAt: DateTime

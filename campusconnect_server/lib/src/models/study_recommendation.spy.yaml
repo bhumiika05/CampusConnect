@@ -1,0 +1,10 @@
+class: StudyRecommendation
+fields:
+  student: StudentProfile
+  preferences: StudyPreferences?
+  compatibilityScore: int
+  sharedSubjects: List<String>
+  sharedGoals: List<String>
+  timingMatch: bool
+  modeMatch: bool
+  scoreBreakdown: String

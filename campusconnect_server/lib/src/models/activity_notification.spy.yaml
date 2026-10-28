@@ -1,0 +1,9 @@
+class: ActivityNotification
+table: activity_notification
+fields:
+  recipientId: int
+  activityType: String
+  title: String
+  message: String
+  isRead: bool
+  createdAt: DateTime

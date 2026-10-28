@@ -1,0 +1,11 @@
+class: StudyPreferences
+table: study_preferences
+fields:
+  studentId: int
+  subjects: List<String>
+  technicalInterests: List<String>
+  preferredTimings: List<String>
+  studyMode: String
+  learningGoals: List<String>
+  skillLevel: String
+  updatedAt: DateTime

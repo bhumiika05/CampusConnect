@@ -1,0 +1,9 @@
+class: DashboardData
+fields:
+  profile: StudentProfile?
+  recommendedBuddies: List<StudyRecommendation>
+  upcomingEvents: List<CampusEvent>
+  openProjects: List<ProjectListing>
+  recentActivities: List<ActivityNotification>
+  profileCompletionPercent: int
+  unreadNotificationCount: int

@@ -1,0 +1,13 @@
+class: CollaborationRequest
+table: collaboration_request
+fields:
+  projectId: int
+  projectTitle: String
+  projectCreatorId: int
+  studentId: int
+  studentName: String
+  studentBranch: String
+  studentSkills: List<String>
+  message: String
+  status: String
+  createdAt: DateTime

@@ -1,0 +1,6 @@
+class: EventBookmark
+table: event_bookmark
+fields:
+  studentId: int
+  eventId: int
+  createdAt: DateTime

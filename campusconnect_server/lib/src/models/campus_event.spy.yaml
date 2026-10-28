@@ -1,0 +1,16 @@
+class: CampusEvent
+table: campus_event
+fields:
+  title: String
+  description: String
+  category: String
+  venue: String
+  startTime: DateTime
+  endTime: DateTime
+  organizer: String
+  organizerId: int?
+  isPublished: bool
+  capacity: int
+  registeredCount: int
+  bannerColor: String?
+  createdAt: DateTime

@@ -1,0 +1,61 @@
+emailIdp:
+  - login:
+  - startRegistration:
+  - verifyRegistrationCode:
+  - finishRegistration:
+  - startPasswordReset:
+  - verifyPasswordResetCode:
+  - finishPasswordReset:
+  - hasAccount:
+jwtRefresh:
+  - refreshAccessToken:
+activity:
+  - getMyActivities:
+  - markAsRead:
+  - markAllAsRead:
+collaboration:
+  - sendRequest:
+  - getIncomingRequests:
+  - getOutgoingRequests:
+  - respondToRequest:
+dashboard:
+  - getDashboardData:
+event:
+  - getEvents:
+  - getEventById:
+  - createEvent:
+  - updateEvent:
+  - togglePublishEvent:
+  - getOrganizedEvents:
+  - toggleBookmark:
+  - getBookmarkedEventIds:
+eventRegistration:
+  - registerForEvent:
+  - cancelRegistration:
+  - getMyRegistrations:
+  - getEventRegistrations:
+profile:
+  - getMyProfile:
+  - getProfileById:
+  - createOrUpdateProfile:
+  - getAllStudents:
+project:
+  - createProject:
+  - getProjects:
+  - getProjectById:
+  - getMyProjects:
+  - updateProjectStatus:
+seed:
+  - seedInitialData:
+studyBuddy:
+  - getPreferences:
+  - updatePreferences:
+  - getRecommendations:
+studyRequest:
+  - sendRequest:
+  - getIncomingRequests:
+  - getOutgoingRequests:
+  - respondToRequest:
+  - cancelRequest:
+greeting:
+  - hello:

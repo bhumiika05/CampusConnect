@@ -5,6 +5,7 @@
 > *Full-Stack Architecture: Flutter + Dart + Serverpod + PostgreSQL + Serverpod Cloud*
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-bhumiika05%2FCampusConnect-181717?logo=github)](https://github.com/bhumiika05/CampusConnect)
+[![Serverpod Cloud](https://img.shields.io/badge/Serverpod%20Cloud-Live%20Deployment-6366F1)](https://campus-connect.serverpod.space/app/)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-10B981?logo=githubpages)](https://bhumiika05.github.io/CampusConnect/)
 [![Dart](https://img.shields.io/badge/Dart-3.13.7-0175C2?logo=dart)](https://dart.dev)
 [![Flutter](https://img.shields.io/badge/Flutter-3.47.8-02569B?logo=flutter)](https://flutter.dev)
@@ -213,33 +214,33 @@ http://localhost:8082/app/
 
 ## ☁️ Serverpod Cloud Deployment Guide
 
-The backend is fully configured for deployment to **Serverpod Cloud**.
+The backend is fully deployed and active on **Serverpod Cloud**.
 
-### 1. Authenticate with Serverpod Cloud
-```bash
-serverpod cloud auth login
-```
-*Follow the interactive prompt to enter your Serverpod Cloud API token.*
+### Live Cloud Endpoints
+- **Web Application:** [https://campus-connect.serverpod.space/app/](https://campus-connect.serverpod.space/app/)
+- **Web Landing:** [https://campus-connect.serverpod.space/](https://campus-connect.serverpod.space/)
+- **API Endpoint:** [https://campus-connect.api.serverpod.space/](https://campus-connect.api.serverpod.space/)
+- **Insights Dashboard:** [https://campus-connect.insights.serverpod.space/](https://campus-connect.insights.serverpod.space/)
 
-### 2. Launch / Initialize Cloud Instance
-```bash
-cd campusconnect_server
-serverpod cloud launch
-```
-
-### 3. Deploy the Backend & Database
-```bash
-serverpod cloud deploy
-```
-
-### 4. Configure Client URL
-Once deployed, set the production server address in `campusconnect_flutter/lib/main.dart`:
-```dart
-client = Client(
-  'https://your-project-slug.serverpod.cloud/',
-  authenticationKeyManager: FlutterAuthenticationKeyManager(),
-)..connectivityMonitor = FlutterConnectivityMonitor();
-```
+### Cloud Deployment Steps Executed
+1. **Authenticated with Serverpod Cloud:**
+   ```bash
+   serverpod cloud auth login
+   ```
+2. **Linked Project:**
+   ```bash
+   cd campusconnect_server
+   serverpod cloud project link -p campus-connect
+   ```
+3. **Deployed Backend, Web Bundle & PostgreSQL Migrations:**
+   ```bash
+   serverpod cloud deploy
+   ```
+4. **Verified Live Podlet Status:**
+   ```bash
+   serverpod cloud status live -p campus-connect
+   ```
+   *Podlets: 1/1 ready, status: Running.*
 
 ---
 

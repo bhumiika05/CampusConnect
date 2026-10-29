@@ -22,6 +22,12 @@ class CampusConnectApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: const CampusConnectRoot(),
+      onGenerateRoute: (settings) => MaterialPageRoute(
+        builder: (context) => const CampusConnectRoot(),
+      ),
+      onUnknownRoute: (settings) => MaterialPageRoute(
+        builder: (context) => const CampusConnectRoot(),
+      ),
     );
   }
 }

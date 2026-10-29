@@ -8,6 +8,7 @@ import 'src/cache_busting.dart';
 import 'src/generated/serverpod.dart';
 import 'src/services/seed_data_service.dart';
 import 'src/web/routes/app_config_route.dart';
+import 'src/web/routes/app_redirect_route.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
@@ -63,6 +64,20 @@ void run(List<String> args) async {
         enableWasmHeaders: false,
       ),
       '/',
+    );
+
+    // Redirect /app and /app/* to / so links to /app/ work seamlessly.
+    pod.webServer.addRoute(
+      AppRedirectRoute(targetUrl: '/'),
+      '/app',
+    );
+    pod.webServer.addRoute(
+      AppRedirectRoute(targetUrl: '/'),
+      '/app/*',
+    );
+    pod.webServer.addRoute(
+      AppRedirectRoute(targetUrl: '/'),
+      '/app/**',
     );
   } else {
     // If the flutter web app has not been built, serve the build app page.

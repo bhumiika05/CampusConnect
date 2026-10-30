@@ -11,7 +11,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.47.8-02569B?logo=flutter)](https://flutter.dev)
 [![Serverpod](https://img.shields.io/badge/Serverpod-4.0.4-2D3748)](https://serverpod.dev)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Embedded%20%2F%20Cloud-336791?logo=postgresql)](https://www.postgresql.org)
-[![Tests](https://img.shields.io/badge/Integration%20Tests-10%2F10%20Passed-10B981)](#-automated-testing-verification)
+[![Tests](https://img.shields.io/badge/Integration%20Tests-12%2F12%20Passed-10B981)](#-automated-testing-verification)
 
 ---
 
@@ -35,7 +35,7 @@
 **CampusConnect** is a comprehensive, production-grade campus community platform designed to eliminate the fragmentation of student life across disjointed WhatsApp groups, physical bulletin boards, and static spreadsheets.
 
 Built from the ground up on modern technologies:
-- **Frontend:** Flutter cross-platform client with Material 3 design, a vibrant Light Theme design system, and multi-user simulation tools.
+- **Frontend:** Flutter cross-platform client with Material 3 design, a vibrant Light Theme design system, My Campus Week planner, AI Copilot assistant, and multi-user simulation tools.
 - **Backend:** Serverpod 4.0.4 asynchronous server with strongly-typed endpoint contracts and server-side validation.
 - **Database:** PostgreSQL configured via Serverpod migrations with transactional integrity.
 - **Hosting:** Direct Serverpod Web server bundling for instant web access and prepared configuration for Serverpod Cloud (`scloud`).
@@ -57,6 +57,8 @@ A unified, real-time ecosystem providing:
 2. **Campus Event Discovery & Registration:** Centralized calendar with category filters, dynamic capacity constraints, duplicate prevention, and digital ticketing.
 3. **TeamUp Project Collaboration:** Talent discovery boards displaying tech stacks, open spot counters, and structured join requests with creator acceptance flows.
 4. **Personal Dashboard & Activity Center:** Dynamic profile progress tracker, smart recommendations, and unified in-app notification center.
+5. **My Campus Week (Personalized Planner):** Single-pane weekly organizer combining registered events, study sessions, team meetings, and personal tasks with smart gap-filling recommendations.
+6. **AI Campus Copilot:** Grounded conversational AI assistant querying live PostgreSQL records to guide students on learning, participating, building, and scheduling their week.
 
 ---
 
@@ -69,12 +71,12 @@ campusconnect/
 ├── campusconnect_server/      # Serverpod backend application
 │   ├── config/                # Environment configurations (development.yaml, test.yaml)
 │   ├── lib/                   # Server endpoints, models, and business logic
-│   │   ├── src/endpoints/     # 10 Serverpod endpoints
+│   │   ├── src/endpoints/     # 12 Serverpod endpoints
 │   │   ├── src/generated/     # Auto-generated protocol & database tables
 │   │   ├── src/models/        # .spy.yaml schema definition files
 │   │   └── src/services/      # Seed data service & core utilities
 │   ├── migrations/            # Versioned SQL database migrations
-│   ├── test/integration/      # 10 automated end-to-end integration tests
+│   ├── test/integration/      # 12 automated end-to-end integration tests
 │   └── web/app/               # Compiled Flutter Web release bundle served on port 8082
 ├── campusconnect_client/      # Auto-generated Dart client library
 │   └── lib/src/protocol/      # Strongly-typed endpoint connectors & DTOs

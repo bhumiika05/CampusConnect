@@ -66,14 +66,10 @@ void run(List<String> args) async {
       '/',
     );
 
-    // Redirect /app and /app/* to / so links to /app/ work seamlessly.
+    // Redirect /app and /app/** to / so links to /app/ work seamlessly.
     pod.webServer.addRoute(
       AppRedirectRoute(targetUrl: '/'),
       '/app',
-    );
-    pod.webServer.addRoute(
-      AppRedirectRoute(targetUrl: '/'),
-      '/app/*',
     );
     pod.webServer.addRoute(
       AppRedirectRoute(targetUrl: '/'),

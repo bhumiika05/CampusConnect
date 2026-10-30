@@ -380,6 +380,54 @@ void main() {
           throwsA(isA<Exception>()),
         );
       });
+
+      test('11. Planner: add personal task, toggle completion, and retrieve week plan', () async {
+        final item = await endpoints.planner.addPlannerItem(
+          sessionBuilder,
+          PlannerItem(
+            studentId: studentA.id!,
+            title: 'Algorithms Revision',
+            category: 'study_session',
+            dayOfWeek: 'Monday',
+            timeSlot: '09:00 AM - 10:30 AM',
+            location: 'Central Library',
+            description: 'Focused graph traversal review.',
+            isCompleted: false,
+            createdAt: DateTime.now(),
+          ),
+        );
+        expect(item.id, isNotNull);
+        expect(item.title, equals('Algorithms Revision'));
+
+        // Toggle completion
+        final toggled = await endpoints.planner.toggleItemCompleted(
+          sessionBuilder,
+          item.id!,
+          studentA.id!,
+        );
+        expect(toggled, isTrue);
+
+        // Retrieve full week plan
+        final summary = await endpoints.planner.getWeekPlan(
+          sessionBuilder,
+          studentA.id!,
+        );
+        expect(summary.totalTasks, greaterThanOrEqualTo(1));
+        expect(summary.completedTasks, greaterThanOrEqualTo(1));
+      });
+
+      test('12. AI Campus Copilot: returns personalized 4-pillar response and grounded action cards', () async {
+        final response = await endpoints.copilot.askCopilot(
+          sessionBuilder,
+          studentA.id!,
+          'What should I do this week?',
+        );
+
+        expect(response.category, equals('weekly_plan'));
+        expect(response.reply, contains('curated weekly campus plan'));
+        expect(response.recommendedCards, isNotEmpty);
+        expect(response.suggestedPrompts, isNotEmpty);
+      });
     },
     rollbackDatabase: RollbackDatabase.disabled,
   );

@@ -19,12 +19,16 @@ import 'package:campusconnect_server/src/generated/campus_event.dart'
     as _i2zef12b;
 import 'package:campusconnect_server/src/generated/collaboration_request.dart'
     as _i6s8cpvv;
+import 'package:campusconnect_server/src/generated/copilot_response.dart'
+    as _iey8979m;
 import 'package:campusconnect_server/src/generated/dashboard_data.dart'
     as _iyeujrii;
 import 'package:campusconnect_server/src/generated/event_registration.dart'
     as _i42qkv6p;
 import 'package:campusconnect_server/src/generated/greetings/greeting.dart'
     as _ipfxojbl;
+import 'package:campusconnect_server/src/generated/planner_item.dart'
+    as _igkghzxl;
 import 'package:campusconnect_server/src/generated/project_listing.dart'
     as _iq9o6tcf;
 import 'package:campusconnect_server/src/generated/student_profile.dart'
@@ -35,6 +39,8 @@ import 'package:campusconnect_server/src/generated/study_recommendation.dart'
     as _i3kpqc5t;
 import 'package:campusconnect_server/src/generated/study_request.dart'
     as _ikk2s12h;
+import 'package:campusconnect_server/src/generated/weekly_planner_summary.dart'
+    as _iiatfm61;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
@@ -180,11 +186,15 @@ class TestEndpoints {
 
   late final _CollaborationEndpoint collaboration;
 
+  late final _CopilotEndpoint copilot;
+
   late final _DashboardEndpoint dashboard;
 
   late final _EventEndpoint event;
 
   late final _EventRegistrationEndpoint eventRegistration;
+
+  late final _PlannerEndpoint planner;
 
   late final _ProfileEndpoint profile;
 
@@ -222,6 +232,10 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    copilot = _CopilotEndpoint(
+      endpoints,
+      serializationManager,
+    );
     dashboard = _DashboardEndpoint(
       endpoints,
       serializationManager,
@@ -231,6 +245,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     eventRegistration = _EventRegistrationEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    planner = _PlannerEndpoint(
       endpoints,
       serializationManager,
     );
@@ -834,6 +852,83 @@ class _CollaborationEndpoint {
   }
 }
 
+class _CopilotEndpoint {
+  _CopilotEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_iey8979m.CopilotResponse> askCopilot(
+    _ist.TestSessionBuilder sessionBuilder,
+    int studentId,
+    String userQuery,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'copilot',
+            method: 'askCopilot',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'copilot',
+          methodName: 'askCopilot',
+          parameters: _ist.testObjectToJson({
+            'studentId': studentId,
+            'userQuery': userQuery,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iey8979m.CopilotResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<bool> syncCopilotRecommendationsToPlanner(
+    _ist.TestSessionBuilder sessionBuilder,
+    int studentId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'copilot',
+            method: 'syncCopilotRecommendationsToPlanner',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'copilot',
+          methodName: 'syncCopilotRecommendationsToPlanner',
+          parameters: _ist.testObjectToJson({'studentId': studentId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _DashboardEndpoint {
   _DashboardEndpoint(
     this._endpointDispatch,
@@ -1296,6 +1391,180 @@ class _EventRegistrationEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<List<_i42qkv6p.EventRegistration>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _PlannerEndpoint {
+  _PlannerEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_iiatfm61.WeeklyPlannerSummary> getWeekPlan(
+    _ist.TestSessionBuilder sessionBuilder,
+    int studentId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'planner',
+            method: 'getWeekPlan',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'planner',
+          methodName: 'getWeekPlan',
+          parameters: _ist.testObjectToJson({'studentId': studentId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iiatfm61.WeeklyPlannerSummary>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_igkghzxl.PlannerItem> addPlannerItem(
+    _ist.TestSessionBuilder sessionBuilder,
+    _igkghzxl.PlannerItem item,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'planner',
+            method: 'addPlannerItem',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'planner',
+          methodName: 'addPlannerItem',
+          parameters: _ist.testObjectToJson({'item': item}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_igkghzxl.PlannerItem>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_igkghzxl.PlannerItem> updatePlannerItem(
+    _ist.TestSessionBuilder sessionBuilder,
+    _igkghzxl.PlannerItem item,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'planner',
+            method: 'updatePlannerItem',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'planner',
+          methodName: 'updatePlannerItem',
+          parameters: _ist.testObjectToJson({'item': item}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_igkghzxl.PlannerItem>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<bool> toggleItemCompleted(
+    _ist.TestSessionBuilder sessionBuilder,
+    int itemId,
+    int studentId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'planner',
+            method: 'toggleItemCompleted',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'planner',
+          methodName: 'toggleItemCompleted',
+          parameters: _ist.testObjectToJson({
+            'itemId': itemId,
+            'studentId': studentId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<bool> deletePlannerItem(
+    _ist.TestSessionBuilder sessionBuilder,
+    int itemId,
+    int studentId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'planner',
+            method: 'deletePlannerItem',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'planner',
+          methodName: 'deletePlannerItem',
+          parameters: _ist.testObjectToJson({
+            'itemId': itemId,
+            'studentId': studentId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<bool>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

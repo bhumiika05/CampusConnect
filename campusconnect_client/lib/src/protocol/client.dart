@@ -17,12 +17,16 @@ import 'package:campusconnect_client/src/protocol/campus_event.dart'
     as _iq3u3g5y;
 import 'package:campusconnect_client/src/protocol/collaboration_request.dart'
     as _iqiqy8rh;
+import 'package:campusconnect_client/src/protocol/copilot_response.dart'
+    as _imgcvws8;
 import 'package:campusconnect_client/src/protocol/dashboard_data.dart'
     as _icgq1zx7;
 import 'package:campusconnect_client/src/protocol/event_registration.dart'
     as _i5ab8n3y;
 import 'package:campusconnect_client/src/protocol/greetings/greeting.dart'
     as _inxi8v3n;
+import 'package:campusconnect_client/src/protocol/planner_item.dart'
+    as _itig9q59;
 import 'package:campusconnect_client/src/protocol/project_listing.dart'
     as _iy7kf7ii;
 import 'package:campusconnect_client/src/protocol/student_profile.dart'
@@ -33,6 +37,8 @@ import 'package:campusconnect_client/src/protocol/study_recommendation.dart'
     as _i0k9swt0;
 import 'package:campusconnect_client/src/protocol/study_request.dart'
     as _ian5kjnn;
+import 'package:campusconnect_client/src/protocol/weekly_planner_summary.dart'
+    as _ix0bi4jg;
 import 'package:http/http.dart' as _i85jenna;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _iacc;
@@ -361,6 +367,36 @@ class EndpointCollaboration extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointCopilot extends _isc.EndpointRef {
+  EndpointCopilot(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'copilot';
+
+  /// Primary conversational AI assistant endpoint that processes student questions
+  /// and generates personalized, grounded recommendations using live PostgreSQL records.
+  _ida.Future<_imgcvws8.CopilotResponse> askCopilot(
+    int studentId,
+    String userQuery,
+  ) => caller.callServerEndpoint<_imgcvws8.CopilotResponse>(
+    'copilot',
+    'askCopilot',
+    {
+      'studentId': studentId,
+      'userQuery': userQuery,
+    },
+  );
+
+  /// One-click helper to synchronize Copilot recommendations into the student's weekly planner
+  _ida.Future<bool> syncCopilotRecommendationsToPlanner(int studentId) =>
+      caller.callServerEndpoint<bool>(
+        'copilot',
+        'syncCopilotRecommendationsToPlanner',
+        {'studentId': studentId},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointDashboard extends _isc.EndpointRef {
   EndpointDashboard(_isc.EndpointCaller caller) : super(caller);
 
@@ -528,6 +564,67 @@ class EndpointEventRegistration extends _isc.EndpointRef {
     {
       'eventId': eventId,
       'organizerId': organizerId,
+    },
+  );
+}
+
+/// {@category Endpoint}
+class EndpointPlanner extends _isc.EndpointRef {
+  EndpointPlanner(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'planner';
+
+  /// Get the full week plan for a student, synthesizing registered events
+  /// and personal tasks into an organized schedule.
+  _ida.Future<_ix0bi4jg.WeeklyPlannerSummary> getWeekPlan(int studentId) =>
+      caller.callServerEndpoint<_ix0bi4jg.WeeklyPlannerSummary>(
+        'planner',
+        'getWeekPlan',
+        {'studentId': studentId},
+      );
+
+  /// Add a new personal planner task or study session
+  _ida.Future<_itig9q59.PlannerItem> addPlannerItem(
+    _itig9q59.PlannerItem item,
+  ) => caller.callServerEndpoint<_itig9q59.PlannerItem>(
+    'planner',
+    'addPlannerItem',
+    {'item': item},
+  );
+
+  /// Update an existing planner item
+  _ida.Future<_itig9q59.PlannerItem> updatePlannerItem(
+    _itig9q59.PlannerItem item,
+  ) => caller.callServerEndpoint<_itig9q59.PlannerItem>(
+    'planner',
+    'updatePlannerItem',
+    {'item': item},
+  );
+
+  /// Toggle task completion status
+  _ida.Future<bool> toggleItemCompleted(
+    int itemId,
+    int studentId,
+  ) => caller.callServerEndpoint<bool>(
+    'planner',
+    'toggleItemCompleted',
+    {
+      'itemId': itemId,
+      'studentId': studentId,
+    },
+  );
+
+  /// Delete a custom planner task
+  _ida.Future<bool> deletePlannerItem(
+    int itemId,
+    int studentId,
+  ) => caller.callServerEndpoint<bool>(
+    'planner',
+    'deletePlannerItem',
+    {
+      'itemId': itemId,
+      'studentId': studentId,
     },
   );
 }
@@ -822,9 +919,11 @@ class Client extends _isc.ServerpodClientShared {
     jwtRefresh = EndpointJwtRefresh(this);
     activity = EndpointActivity(this);
     collaboration = EndpointCollaboration(this);
+    copilot = EndpointCopilot(this);
     dashboard = EndpointDashboard(this);
     event = EndpointEvent(this);
     eventRegistration = EndpointEventRegistration(this);
+    planner = EndpointPlanner(this);
     profile = EndpointProfile(this);
     project = EndpointProject(this);
     seed = EndpointSeed(this);
@@ -842,11 +941,15 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointCollaboration collaboration;
 
+  late final EndpointCopilot copilot;
+
   late final EndpointDashboard dashboard;
 
   late final EndpointEvent event;
 
   late final EndpointEventRegistration eventRegistration;
+
+  late final EndpointPlanner planner;
 
   late final EndpointProfile profile;
 
@@ -868,9 +971,11 @@ class Client extends _isc.ServerpodClientShared {
     'jwtRefresh': jwtRefresh,
     'activity': activity,
     'collaboration': collaboration,
+    'copilot': copilot,
     'dashboard': dashboard,
     'event': event,
     'eventRegistration': eventRegistration,
+    'planner': planner,
     'profile': profile,
     'project': project,
     'seed': seed,

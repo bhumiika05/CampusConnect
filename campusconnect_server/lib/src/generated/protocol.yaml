@@ -18,6 +18,9 @@ collaboration:
   - getIncomingRequests:
   - getOutgoingRequests:
   - respondToRequest:
+copilot:
+  - askCopilot:
+  - syncCopilotRecommendationsToPlanner:
 dashboard:
   - getDashboardData:
 event:
@@ -34,6 +37,12 @@ eventRegistration:
   - cancelRegistration:
   - getMyRegistrations:
   - getEventRegistrations:
+planner:
+  - getWeekPlan:
+  - addPlannerItem:
+  - updatePlannerItem:
+  - toggleItemCompleted:
+  - deletePlannerItem:
 profile:
   - getMyProfile:
   - getProfileById:

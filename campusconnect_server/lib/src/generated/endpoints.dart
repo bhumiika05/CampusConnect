@@ -12,6 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:campusconnect_server/src/generated/campus_event.dart'
     as _i2zef12b;
+import 'package:campusconnect_server/src/generated/planner_item.dart'
+    as _igkghzxl;
 import 'package:campusconnect_server/src/generated/project_listing.dart'
     as _iq9o6tcf;
 import 'package:campusconnect_server/src/generated/student_profile.dart'
@@ -27,9 +29,11 @@ import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../endpoints/activity_endpoint.dart' as _ijhtbkuk;
 import '../endpoints/collaboration_endpoint.dart' as _it38s895;
+import '../endpoints/copilot_endpoint.dart' as _ihft4d9p;
 import '../endpoints/dashboard_endpoint.dart' as _ibmx856o;
 import '../endpoints/event_endpoint.dart' as _icw8lb6p;
 import '../endpoints/event_registration_endpoint.dart' as _ikdqwe68;
+import '../endpoints/planner_endpoint.dart' as _i3d44723;
 import '../endpoints/profile_endpoint.dart' as _i2cx2pww;
 import '../endpoints/project_endpoint.dart' as _iemg8ri2;
 import '../endpoints/seed_endpoint.dart' as _i8h1zywb;
@@ -65,6 +69,12 @@ class Endpoints extends _is.EndpointDispatch {
           'collaboration',
           null,
         ),
+      'copilot': _ihft4d9p.CopilotEndpoint()
+        ..initialize(
+          server,
+          'copilot',
+          null,
+        ),
       'dashboard': _ibmx856o.DashboardEndpoint()
         ..initialize(
           server,
@@ -81,6 +91,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'eventRegistration',
+          null,
+        ),
+      'planner': _i3d44723.PlannerEndpoint()
+        ..initialize(
+          server,
+          'planner',
           null,
         ),
       'profile': _i2cx2pww.ProfileEndpoint()
@@ -509,6 +525,56 @@ class Endpoints extends _is.EndpointDispatch {
         ),
       },
     );
+    connectors['copilot'] = _is.EndpointConnector(
+      name: 'copilot',
+      endpoint: endpoints['copilot']!,
+      methodConnectors: {
+        'askCopilot': _is.MethodConnector(
+          name: 'askCopilot',
+          params: {
+            'studentId': _is.ParameterDescription(
+              name: 'studentId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'userQuery': _is.ParameterDescription(
+              name: 'userQuery',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['copilot'] as _ihft4d9p.CopilotEndpoint)
+                  .askCopilot(
+                    session,
+                    params['studentId'],
+                    params['userQuery'],
+                  ),
+        ),
+        'syncCopilotRecommendationsToPlanner': _is.MethodConnector(
+          name: 'syncCopilotRecommendationsToPlanner',
+          params: {
+            'studentId': _is.ParameterDescription(
+              name: 'studentId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['copilot'] as _ihft4d9p.CopilotEndpoint)
+                  .syncCopilotRecommendationsToPlanner(
+                    session,
+                    params['studentId'],
+                  ),
+        ),
+      },
+    );
     connectors['dashboard'] = _is.EndpointConnector(
       name: 'dashboard',
       endpoint: endpoints['dashboard']!,
@@ -833,6 +899,119 @@ class Endpoints extends _is.EndpointDispatch {
                         params['eventId'],
                         params['organizerId'],
                       ),
+        ),
+      },
+    );
+    connectors['planner'] = _is.EndpointConnector(
+      name: 'planner',
+      endpoint: endpoints['planner']!,
+      methodConnectors: {
+        'getWeekPlan': _is.MethodConnector(
+          name: 'getWeekPlan',
+          params: {
+            'studentId': _is.ParameterDescription(
+              name: 'studentId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['planner'] as _i3d44723.PlannerEndpoint)
+                  .getWeekPlan(
+                    session,
+                    params['studentId'],
+                  ),
+        ),
+        'addPlannerItem': _is.MethodConnector(
+          name: 'addPlannerItem',
+          params: {
+            'item': _is.ParameterDescription(
+              name: 'item',
+              type: _is.getType<_igkghzxl.PlannerItem>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['planner'] as _i3d44723.PlannerEndpoint)
+                  .addPlannerItem(
+                    session,
+                    params['item'],
+                  ),
+        ),
+        'updatePlannerItem': _is.MethodConnector(
+          name: 'updatePlannerItem',
+          params: {
+            'item': _is.ParameterDescription(
+              name: 'item',
+              type: _is.getType<_igkghzxl.PlannerItem>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['planner'] as _i3d44723.PlannerEndpoint)
+                  .updatePlannerItem(
+                    session,
+                    params['item'],
+                  ),
+        ),
+        'toggleItemCompleted': _is.MethodConnector(
+          name: 'toggleItemCompleted',
+          params: {
+            'itemId': _is.ParameterDescription(
+              name: 'itemId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'studentId': _is.ParameterDescription(
+              name: 'studentId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['planner'] as _i3d44723.PlannerEndpoint)
+                  .toggleItemCompleted(
+                    session,
+                    params['itemId'],
+                    params['studentId'],
+                  ),
+        ),
+        'deletePlannerItem': _is.MethodConnector(
+          name: 'deletePlannerItem',
+          params: {
+            'itemId': _is.ParameterDescription(
+              name: 'itemId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'studentId': _is.ParameterDescription(
+              name: 'studentId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['planner'] as _i3d44723.PlannerEndpoint)
+                  .deletePlannerItem(
+                    session,
+                    params['itemId'],
+                    params['studentId'],
+                  ),
         ),
       },
     );

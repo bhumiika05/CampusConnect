@@ -35,27 +35,35 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'activity_notification.dart' as _irw9wpf5;
 import 'campus_event.dart' as _ieh998j0;
 import 'collaboration_request.dart' as _irwixkwz;
+import 'copilot_action_card.dart' as _isfb8n60;
+import 'copilot_response.dart' as _i5r7h6ax;
 import 'dashboard_data.dart' as _irt0lj0o;
 import 'event_bookmark.dart' as _ihuolqct;
 import 'event_registration.dart' as _i27uzliw;
 import 'greetings/greeting.dart' as _izw8z7ou;
+import 'planner_item.dart' as _in2kwev7;
 import 'project_listing.dart' as _ir8do2mw;
 import 'student_profile.dart' as _iovtxv26;
 import 'study_preferences.dart' as _ieqi1f6a;
 import 'study_recommendation.dart' as _i4zw24pz;
 import 'study_request.dart' as _i2p0wucy;
+import 'weekly_planner_summary.dart' as _iwrx71z1;
 export 'activity_notification.dart';
 export 'campus_event.dart';
 export 'collaboration_request.dart';
+export 'copilot_action_card.dart';
+export 'copilot_response.dart';
 export 'dashboard_data.dart';
 export 'event_bookmark.dart';
 export 'event_registration.dart';
 export 'greetings/greeting.dart';
+export 'planner_item.dart';
 export 'project_listing.dart';
 export 'student_profile.dart';
 export 'study_preferences.dart';
 export 'study_recommendation.dart';
 export 'study_request.dart';
+export 'weekly_planner_summary.dart';
 export 'client.dart';
 
 class Protocol extends _isc.SerializationManager {
@@ -101,6 +109,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == _irwixkwz.CollaborationRequest) {
       return _irwixkwz.CollaborationRequest.fromJson(data) as T;
     }
+    if (t == _isfb8n60.CopilotActionCard) {
+      return _isfb8n60.CopilotActionCard.fromJson(data) as T;
+    }
+    if (t == _i5r7h6ax.CopilotResponse) {
+      return _i5r7h6ax.CopilotResponse.fromJson(data) as T;
+    }
     if (t == _irt0lj0o.DashboardData) {
       return _irt0lj0o.DashboardData.fromJson(data) as T;
     }
@@ -112,6 +126,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
+    }
+    if (t == _in2kwev7.PlannerItem) {
+      return _in2kwev7.PlannerItem.fromJson(data) as T;
     }
     if (t == _ir8do2mw.ProjectListing) {
       return _ir8do2mw.ProjectListing.fromJson(data) as T;
@@ -128,6 +145,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _i2p0wucy.StudyRequest) {
       return _i2p0wucy.StudyRequest.fromJson(data) as T;
     }
+    if (t == _iwrx71z1.WeeklyPlannerSummary) {
+      return _iwrx71z1.WeeklyPlannerSummary.fromJson(data) as T;
+    }
     if (t == _isc.getType<_irw9wpf5.ActivityNotification?>()) {
       return (data != null
               ? _irw9wpf5.ActivityNotification.fromJson(data)
@@ -141,6 +161,14 @@ class Protocol extends _isc.SerializationManager {
       return (data != null
               ? _irwixkwz.CollaborationRequest.fromJson(data)
               : null)
+          as T;
+    }
+    if (t == _isc.getType<_isfb8n60.CopilotActionCard?>()) {
+      return (data != null ? _isfb8n60.CopilotActionCard.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i5r7h6ax.CopilotResponse?>()) {
+      return (data != null ? _i5r7h6ax.CopilotResponse.fromJson(data) : null)
           as T;
     }
     if (t == _isc.getType<_irt0lj0o.DashboardData?>()) {
@@ -157,6 +185,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_in2kwev7.PlannerItem?>()) {
+      return (data != null ? _in2kwev7.PlannerItem.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ir8do2mw.ProjectListing?>()) {
       return (data != null ? _ir8do2mw.ProjectListing.fromJson(data) : null)
@@ -179,8 +210,20 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_i2p0wucy.StudyRequest?>()) {
       return (data != null ? _i2p0wucy.StudyRequest.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_iwrx71z1.WeeklyPlannerSummary?>()) {
+      return (data != null
+              ? _iwrx71z1.WeeklyPlannerSummary.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == List<_isfb8n60.CopilotActionCard>) {
+      return (data as List)
+              .map((e) => deserialize<_isfb8n60.CopilotActionCard>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i4zw24pz.StudyRecommendation>) {
       return (data as List)
@@ -203,6 +246,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == List<_irw9wpf5.ActivityNotification>) {
       return (data as List)
               .map((e) => deserialize<_irw9wpf5.ActivityNotification>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_in2kwev7.PlannerItem>) {
+      return (data as List)
+              .map((e) => deserialize<_in2kwev7.PlannerItem>(e))
               .toList()
           as T;
     }
@@ -271,15 +320,19 @@ class Protocol extends _isc.SerializationManager {
       _irw9wpf5.ActivityNotification => 'ActivityNotification',
       _ieh998j0.CampusEvent => 'CampusEvent',
       _irwixkwz.CollaborationRequest => 'CollaborationRequest',
+      _isfb8n60.CopilotActionCard => 'CopilotActionCard',
+      _i5r7h6ax.CopilotResponse => 'CopilotResponse',
       _irt0lj0o.DashboardData => 'DashboardData',
       _ihuolqct.EventBookmark => 'EventBookmark',
       _i27uzliw.EventRegistration => 'EventRegistration',
       _izw8z7ou.Greeting => 'Greeting',
+      _in2kwev7.PlannerItem => 'PlannerItem',
       _ir8do2mw.ProjectListing => 'ProjectListing',
       _iovtxv26.StudentProfile => 'StudentProfile',
       _ieqi1f6a.StudyPreferences => 'StudyPreferences',
       _i4zw24pz.StudyRecommendation => 'StudyRecommendation',
       _i2p0wucy.StudyRequest => 'StudyRequest',
+      _iwrx71z1.WeeklyPlannerSummary => 'WeeklyPlannerSummary',
       _ => null,
     };
   }
@@ -303,6 +356,10 @@ class Protocol extends _isc.SerializationManager {
         return 'CampusEvent';
       case _irwixkwz.CollaborationRequest():
         return 'CollaborationRequest';
+      case _isfb8n60.CopilotActionCard():
+        return 'CopilotActionCard';
+      case _i5r7h6ax.CopilotResponse():
+        return 'CopilotResponse';
       case _irt0lj0o.DashboardData():
         return 'DashboardData';
       case _ihuolqct.EventBookmark():
@@ -311,6 +368,8 @@ class Protocol extends _isc.SerializationManager {
         return 'EventRegistration';
       case _izw8z7ou.Greeting():
         return 'Greeting';
+      case _in2kwev7.PlannerItem():
+        return 'PlannerItem';
       case _ir8do2mw.ProjectListing():
         return 'ProjectListing';
       case _iovtxv26.StudentProfile():
@@ -321,6 +380,8 @@ class Protocol extends _isc.SerializationManager {
         return 'StudyRecommendation';
       case _i2p0wucy.StudyRequest():
         return 'StudyRequest';
+      case _iwrx71z1.WeeklyPlannerSummary():
+        return 'WeeklyPlannerSummary';
     }
     className = _iaic.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -352,6 +413,12 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'CollaborationRequest') {
       return deserialize<_irwixkwz.CollaborationRequest>(data['data']);
     }
+    if (dataClassName == 'CopilotActionCard') {
+      return deserialize<_isfb8n60.CopilotActionCard>(data['data']);
+    }
+    if (dataClassName == 'CopilotResponse') {
+      return deserialize<_i5r7h6ax.CopilotResponse>(data['data']);
+    }
     if (dataClassName == 'DashboardData') {
       return deserialize<_irt0lj0o.DashboardData>(data['data']);
     }
@@ -363,6 +430,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
+    }
+    if (dataClassName == 'PlannerItem') {
+      return deserialize<_in2kwev7.PlannerItem>(data['data']);
     }
     if (dataClassName == 'ProjectListing') {
       return deserialize<_ir8do2mw.ProjectListing>(data['data']);
@@ -378,6 +448,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'StudyRequest') {
       return deserialize<_i2p0wucy.StudyRequest>(data['data']);
+    }
+    if (dataClassName == 'WeeklyPlannerSummary') {
+      return deserialize<_iwrx71z1.WeeklyPlannerSummary>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);

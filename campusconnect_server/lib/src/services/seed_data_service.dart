@@ -14,6 +14,10 @@ class SeedDataService {
     if (force) {
       session.log('Force re-seeding database...');
       // Clear existing records in logical order
+      await PlannerItem.db.deleteWhere(
+        session,
+        where: (t) => t.id.notEquals(-1),
+      );
       await ActivityNotification.db.deleteWhere(
         session,
         where: (t) => t.id.notEquals(-1),
@@ -855,6 +859,70 @@ class SeedDataService {
         createdAt: now.subtract(const Duration(hours: 12)),
       ),
     );
+
+    session.log('Seeding initial weekly planner items...');
+    final aaravId = insertedProfiles[0].id!;
+    final initialPlannerItems = [
+      PlannerItem(
+        studentId: aaravId,
+        title: 'Data Structures Study Session',
+        category: 'study_session',
+        dayOfWeek: 'Monday',
+        timeSlot: '10:00 AM - 11:30 AM',
+        location: 'Library 3rd Floor - Study Pod B',
+        description: 'Review trees, graphs, and dynamic programming patterns.',
+        isCompleted: true,
+        createdAt: now.subtract(const Duration(days: 3)),
+      ),
+      PlannerItem(
+        studentId: aaravId,
+        title: 'AI & Machine Learning Workshop',
+        category: 'event',
+        dayOfWeek: 'Tuesday',
+        timeSlot: '02:00 PM - 04:00 PM',
+        location: 'Main Tech Auditorium',
+        description: 'Hands-on session on neural networks and model deployment.',
+        isCompleted: true,
+        createdAt: now.subtract(const Duration(days: 2)),
+      ),
+      PlannerItem(
+        studentId: aaravId,
+        title: 'Team Project Architecture Meeting',
+        category: 'project_meeting',
+        dayOfWeek: 'Wednesday',
+        timeSlot: '04:30 PM - 06:00 PM',
+        location: 'Innovation Hub Room 204',
+        description: 'Finalize API schema, Serverpod models, and task breakdown.',
+        isCompleted: false,
+        createdAt: now.subtract(const Duration(days: 1)),
+      ),
+      PlannerItem(
+        studentId: aaravId,
+        title: 'Campus Build Sprint Preparation',
+        category: 'personal_task',
+        dayOfWeek: 'Thursday',
+        timeSlot: '05:00 PM - 07:00 PM',
+        location: 'Computer Lab 3',
+        description: 'Setup repository template, review requirements, and coordinate roles.',
+        isCompleted: false,
+        createdAt: now,
+      ),
+      PlannerItem(
+        studentId: aaravId,
+        title: 'Peer-Learning & Code Review Session',
+        category: 'study_session',
+        dayOfWeek: 'Friday',
+        timeSlot: '03:00 PM - 04:30 PM',
+        location: 'Student Lounge / Discord',
+        description: 'Weekly peer review of Dart code and design principles.',
+        isCompleted: false,
+        createdAt: now,
+      ),
+    ];
+
+    for (final item in initialPlannerItems) {
+      await PlannerItem.db.insertRow(session, item);
+    }
 
     session.log('Database seeding successfully completed!');
     return true;

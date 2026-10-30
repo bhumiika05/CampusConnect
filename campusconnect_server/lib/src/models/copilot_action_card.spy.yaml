@@ -1,0 +1,9 @@
+class: CopilotActionCard
+fields:
+  cardType: String
+  title: String
+  subtitle: String
+  badge: String?
+  referenceId: int?
+  actionLabel: String?
+  dataPayload: String?

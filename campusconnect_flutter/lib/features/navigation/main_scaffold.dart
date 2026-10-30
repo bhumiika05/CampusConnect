@@ -5,8 +5,10 @@ import '../../core/widgets/campus_logo.dart';
 import '../../core/widgets/student_avatar.dart';
 import '../../core/widgets/switch_user_sheet.dart';
 import '../activity/activity_center_screen.dart';
+import '../copilot/campus_copilot_screen.dart';
 import '../events/events_screen.dart';
 import '../home/home_dashboard_screen.dart';
+import '../planner/campus_week_screen.dart';
 import '../profile/profile_screen.dart';
 import '../study_buddy/study_buddy_screen.dart';
 import '../team_up/team_up_screen.dart';
@@ -44,6 +46,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     StudyBuddyScreen(),
     EventsScreen(),
     TeamUpScreen(),
+    CampusWeekScreen(),
   ];
 
   @override
@@ -119,6 +122,50 @@ class _MainScaffoldState extends State<MainScaffold> {
           ],
         ),
         actions: [
+          // AI Copilot Action Pill
+          Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CampusCopilotScreen(),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                decoration: BoxDecoration(
+                  gradient: AppColors.vibrantCardGradient,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.secondaryPurple.withValues(alpha: 0.25),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 13),
+                    SizedBox(width: 4),
+                    Text(
+                      'AI Copilot',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           // Activity Center Bell
           Stack(
             alignment: Alignment.center,
@@ -214,6 +261,11 @@ class _MainScaffoldState extends State<MainScaffold> {
             icon: Icon(Icons.rocket_outlined),
             selectedIcon: Icon(Icons.rocket_launch_rounded),
             label: 'TeamUp',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month_rounded),
+            label: 'My Week',
           ),
         ],
       ),

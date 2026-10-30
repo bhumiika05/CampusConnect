@@ -1,0 +1,13 @@
+class: PlannerItem
+table: planner_item
+fields:
+  studentId: int
+  title: String
+  category: String
+  dayOfWeek: String
+  timeSlot: String
+  location: String?
+  description: String?
+  referenceId: int?
+  isCompleted: bool
+  createdAt: DateTime

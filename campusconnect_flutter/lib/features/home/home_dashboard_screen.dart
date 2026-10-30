@@ -8,6 +8,7 @@ import '../../core/widgets/app_badge.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/state_views.dart';
 import '../../core/widgets/student_avatar.dart';
+import '../copilot/campus_copilot_screen.dart';
 import '../events/event_details_screen.dart';
 import '../navigation/main_scaffold.dart';
 import '../study_buddy/study_requests_screen.dart';
@@ -101,7 +102,11 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               currentStudent,
               data?.profileCompletionPercent ?? 80,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
+
+            // AI Campus Copilot Interactive Card
+            _buildCopilotHeroCard(context),
+            const SizedBox(height: 16),
 
             // Quick Actions
             _buildQuickActions(context),
@@ -363,65 +368,188 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
+  Widget _buildCopilotHeroCard(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CampusCopilotScreen(),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF4338CA), Color(0xFF6D28D9), Color(0xFF0284C7)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF6D28D9).withValues(alpha: 0.25),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'AI Campus Copilot',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.accentCyan.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Text(
+                          'LIVE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    'What should I do this week? Get a personalized 4-pillar campus roadmap.',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.arrow_forward_rounded,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildQuickActions(BuildContext context) {
-    return Row(
-      children: [
-        _buildActionTile(
-          icon: Icons.person_search_rounded,
-          color: AppColors.secondaryPurple,
-          label: 'Find Buddy',
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainScaffold(initialIndex: 1),
-              ),
-            );
-          },
-        ),
-        const SizedBox(width: 10),
-        _buildActionTile(
-          icon: Icons.calendar_month_rounded,
-          color: AppColors.accentLightBlue,
-          label: 'Explore Events',
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainScaffold(initialIndex: 2),
-              ),
-            );
-          },
-        ),
-        const SizedBox(width: 10),
-        _buildActionTile(
-          icon: Icons.group_work_rounded,
-          color: const Color(0xFF10B981),
-          label: 'TeamUp',
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainScaffold(initialIndex: 3),
-              ),
-            );
-          },
-        ),
-        const SizedBox(width: 10),
-        _buildActionTile(
-          icon: Icons.mark_email_unread_rounded,
-          color: const Color(0xFFF59E0B),
-          label: 'My Requests',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const StudyRequestsScreen(),
-              ),
-            );
-          },
-        ),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _buildActionTile(
+            icon: Icons.person_search_rounded,
+            color: AppColors.secondaryPurple,
+            label: 'Find Buddy',
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MainScaffold(initialIndex: 1),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          _buildActionTile(
+            icon: Icons.calendar_month_rounded,
+            color: AppColors.accentLightBlue,
+            label: 'Events',
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MainScaffold(initialIndex: 2),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          _buildActionTile(
+            icon: Icons.rocket_launch_rounded,
+            color: const Color(0xFF10B981),
+            label: 'TeamUp',
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MainScaffold(initialIndex: 3),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          _buildActionTile(
+            icon: Icons.event_note_rounded,
+            color: const Color(0xFF6366F1),
+            label: 'My Week',
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MainScaffold(initialIndex: 4),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          _buildActionTile(
+            icon: Icons.mark_email_unread_rounded,
+            color: const Color(0xFFF59E0B),
+            label: 'Requests',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StudyRequestsScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

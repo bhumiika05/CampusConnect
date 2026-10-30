@@ -1,0 +1,6 @@
+class: WeeklyPlannerSummary
+fields:
+  items: List<PlannerItem>
+  totalTasks: int
+  completedTasks: int
+  recommendedItems: List<PlannerItem>

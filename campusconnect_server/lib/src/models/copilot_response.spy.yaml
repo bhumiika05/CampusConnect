@@ -1,0 +1,6 @@
+class: CopilotResponse
+fields:
+  reply: String
+  category: String
+  suggestedPrompts: List<String>
+  recommendedCards: List<CopilotActionCard>

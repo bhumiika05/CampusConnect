@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../client.dart';
 import '../../core/services/session_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_button.dart';
@@ -367,6 +368,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 12),
             AppButton(
+              label: 'Reset Demo Data to Initial State',
+              icon: Icons.refresh_rounded,
+              variant: AppButtonVariant.outline,
+              width: double.infinity,
+              onPressed: _resetDemoData,
+            ),
+            const SizedBox(height: 12),
+            AppButton(
               label: 'Sign Out',
               icon: Icons.logout_rounded,
               variant: AppButtonVariant.danger,
@@ -385,5 +394,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _resetDemoData() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: AppColors.surface,
+        title: const Text(
+          'Reset Demo Data?',
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        content: const Text(
+          'This will re-seed all sample student profiles, campus events, project collaborations, and weekly planner activities to their initial pristine state.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.secondaryPurple,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Reset Now'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(color: AppColors.secondaryPurple),
+        ),
+      );
+
+      try {
+        await client.seed.seedInitialData(force: true);
+        await SessionService.instance.initSession();
+        if (mounted) {
+          Navigator.pop(context); // close loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Demo data re-seeded successfully! ✨'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          setState(() {});
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context); // close loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to reset demo data: $e'),
+              backgroundColor: AppColors.danger,
+            ),
+          );
+        }
+      }
+    }
   }
 }

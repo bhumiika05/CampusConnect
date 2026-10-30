@@ -15,6 +15,8 @@ import 'package:campusconnect_client/src/protocol/activity_notification.dart'
     as _iq707l6z;
 import 'package:campusconnect_client/src/protocol/campus_event.dart'
     as _iq3u3g5y;
+import 'package:campusconnect_client/src/protocol/campus_location.dart'
+    as _i7e4p0ip;
 import 'package:campusconnect_client/src/protocol/collaboration_request.dart'
     as _iqiqy8rh;
 import 'package:campusconnect_client/src/protocol/copilot_response.dart'
@@ -569,6 +571,44 @@ class EndpointEventRegistration extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointLocation extends _isc.EndpointRef {
+  EndpointLocation(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'location';
+
+  /// Retrieves campus locations filtered by category and/or search query.
+  _ida.Future<List<_i7e4p0ip.CampusLocation>> getLocations({
+    String? category,
+    String? query,
+  }) => caller.callServerEndpoint<List<_i7e4p0ip.CampusLocation>>(
+    'location',
+    'getLocations',
+    {
+      'category': category,
+      'query': query,
+    },
+  );
+
+  /// Retrieves a specific location by its database ID.
+  _ida.Future<_i7e4p0ip.CampusLocation?> getLocationById(int id) =>
+      caller.callServerEndpoint<_i7e4p0ip.CampusLocation?>(
+        'location',
+        'getLocationById',
+        {'id': id},
+      );
+
+  /// Retrieves confirmed events happening at the specified location ID or matching venue name.
+  _ida.Future<List<_iq3u3g5y.CampusEvent>> getEventsForLocation(
+    int locationId,
+  ) => caller.callServerEndpoint<List<_iq3u3g5y.CampusEvent>>(
+    'location',
+    'getEventsForLocation',
+    {'locationId': locationId},
+  );
+}
+
+/// {@category Endpoint}
 class EndpointPlanner extends _isc.EndpointRef {
   EndpointPlanner(_isc.EndpointCaller caller) : super(caller);
 
@@ -923,6 +963,7 @@ class Client extends _isc.ServerpodClientShared {
     dashboard = EndpointDashboard(this);
     event = EndpointEvent(this);
     eventRegistration = EndpointEventRegistration(this);
+    location = EndpointLocation(this);
     planner = EndpointPlanner(this);
     profile = EndpointProfile(this);
     project = EndpointProject(this);
@@ -948,6 +989,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointEvent event;
 
   late final EndpointEventRegistration eventRegistration;
+
+  late final EndpointLocation location;
 
   late final EndpointPlanner planner;
 
@@ -975,6 +1018,7 @@ class Client extends _isc.ServerpodClientShared {
     'dashboard': dashboard,
     'event': event,
     'eventRegistration': eventRegistration,
+    'location': location,
     'planner': planner,
     'profile': profile,
     'project': project,

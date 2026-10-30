@@ -15,6 +15,8 @@ import 'package:campusconnect_server/src/generated/activity_notification.dart'
     as _i1of1t5x;
 import 'package:campusconnect_server/src/generated/campus_event.dart'
     as _i2zef12b;
+import 'package:campusconnect_server/src/generated/campus_location.dart'
+    as _i8398xj1;
 import 'package:campusconnect_server/src/generated/collaboration_request.dart'
     as _i6s8cpvv;
 import 'package:campusconnect_server/src/generated/event_registration.dart'
@@ -35,6 +37,7 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
 import 'activity_notification.dart' as _irw9wpf5;
 import 'campus_event.dart' as _ieh998j0;
+import 'campus_location.dart' as _ib8flzxr;
 import 'collaboration_request.dart' as _irwixkwz;
 import 'copilot_action_card.dart' as _isfb8n60;
 import 'copilot_response.dart' as _i5r7h6ax;
@@ -51,6 +54,7 @@ import 'study_request.dart' as _i2p0wucy;
 import 'weekly_planner_summary.dart' as _iwrx71z1;
 export 'activity_notification.dart';
 export 'campus_event.dart';
+export 'campus_location.dart';
 export 'collaboration_request.dart';
 export 'copilot_action_card.dart';
 export 'copilot_response.dart';
@@ -166,6 +170,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'String',
         ),
         _isp.ColumnDefinition(
+          name: 'locationId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
           name: 'startTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -222,6 +232,110 @@ class Protocol extends _is.DatabaseSerializationManager {
       ],
       foreignKeys: [],
       indexes: [],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'campus_location',
+      dartName: 'CampusLocation',
+      schema: 'public',
+      module: 'campusconnect',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'name',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'category',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'shortDescription',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'latitude',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'longitude',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingBlock',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'openingHours',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'contactInfo',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'website',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'accessibilityInfo',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isVerified',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tags',
+          columnType: _isp.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'campus_location_category_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'category',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
       managed: true,
     ),
     _isp.TableDefinition(
@@ -838,6 +952,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ieh998j0.CampusEvent) {
       return _ieh998j0.CampusEvent.fromJson(data) as T;
     }
+    if (t == _ib8flzxr.CampusLocation) {
+      return _ib8flzxr.CampusLocation.fromJson(data) as T;
+    }
     if (t == _irwixkwz.CollaborationRequest) {
       return _irwixkwz.CollaborationRequest.fromJson(data) as T;
     }
@@ -888,6 +1005,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ieh998j0.CampusEvent?>()) {
       return (data != null ? _ieh998j0.CampusEvent.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ib8flzxr.CampusLocation?>()) {
+      return (data != null ? _ib8flzxr.CampusLocation.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_irwixkwz.CollaborationRequest?>()) {
       return (data != null
@@ -950,6 +1071,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _is.getType<List<String>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
     }
     if (t == List<_isfb8n60.CopilotActionCard>) {
       return (data as List)
@@ -1014,6 +1141,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i8398xj1.CampusLocation>) {
+      return (data as List)
+              .map((e) => deserialize<_i8398xj1.CampusLocation>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ibrxl8gk.StudentProfile>) {
       return (data as List)
               .map((e) => deserialize<_ibrxl8gk.StudentProfile>(e))
@@ -1054,6 +1187,7 @@ class Protocol extends _is.DatabaseSerializationManager {
     return switch (type) {
       _irw9wpf5.ActivityNotification => 'ActivityNotification',
       _ieh998j0.CampusEvent => 'CampusEvent',
+      _ib8flzxr.CampusLocation => 'CampusLocation',
       _irwixkwz.CollaborationRequest => 'CollaborationRequest',
       _isfb8n60.CopilotActionCard => 'CopilotActionCard',
       _i5r7h6ax.CopilotResponse => 'CopilotResponse',
@@ -1089,6 +1223,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'ActivityNotification';
       case _ieh998j0.CampusEvent():
         return 'CampusEvent';
+      case _ib8flzxr.CampusLocation():
+        return 'CampusLocation';
       case _irwixkwz.CollaborationRequest():
         return 'CollaborationRequest';
       case _isfb8n60.CopilotActionCard():
@@ -1148,6 +1284,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'CampusEvent') {
       return deserialize<_ieh998j0.CampusEvent>(data['data']);
+    }
+    if (dataClassName == 'CampusLocation') {
+      return deserialize<_ib8flzxr.CampusLocation>(data['data']);
     }
     if (dataClassName == 'CollaborationRequest') {
       return deserialize<_irwixkwz.CollaborationRequest>(data['data']);
@@ -1236,6 +1375,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _irw9wpf5.ActivityNotification.t;
       case _ieh998j0.CampusEvent:
         return _ieh998j0.CampusEvent.t;
+      case _ib8flzxr.CampusLocation:
+        return _ib8flzxr.CampusLocation.t;
       case _irwixkwz.CollaborationRequest:
         return _irwixkwz.CollaborationRequest.t;
       case _ihuolqct.EventBookmark:

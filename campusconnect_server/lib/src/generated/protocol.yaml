@@ -37,6 +37,10 @@ eventRegistration:
   - cancelRegistration:
   - getMyRegistrations:
   - getEventRegistrations:
+location:
+  - getLocations:
+  - getLocationById:
+  - getEventsForLocation:
 planner:
   - getWeekPlan:
   - addPlannerItem:

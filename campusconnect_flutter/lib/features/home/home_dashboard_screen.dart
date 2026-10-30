@@ -10,6 +10,7 @@ import '../../core/widgets/state_views.dart';
 import '../../core/widgets/student_avatar.dart';
 import '../copilot/campus_copilot_screen.dart';
 import '../events/event_details_screen.dart';
+import '../map/campus_map_screen.dart';
 import '../navigation/main_scaffold.dart';
 import '../study_buddy/study_requests_screen.dart';
 import '../study_buddy/widgets/send_study_request_dialog.dart';
@@ -502,6 +503,20 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MainScaffold(initialIndex: 2),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          _buildActionTile(
+            icon: Icons.map_rounded,
+            color: const Color(0xFF0284C7),
+            label: 'Campus Map',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CampusMapScreen(),
                 ),
               );
             },

@@ -33,6 +33,7 @@ import '../endpoints/copilot_endpoint.dart' as _ihft4d9p;
 import '../endpoints/dashboard_endpoint.dart' as _ibmx856o;
 import '../endpoints/event_endpoint.dart' as _icw8lb6p;
 import '../endpoints/event_registration_endpoint.dart' as _ikdqwe68;
+import '../endpoints/location_endpoint.dart' as _iu1rtxjg;
 import '../endpoints/planner_endpoint.dart' as _i3d44723;
 import '../endpoints/profile_endpoint.dart' as _i2cx2pww;
 import '../endpoints/project_endpoint.dart' as _iemg8ri2;
@@ -91,6 +92,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'eventRegistration',
+          null,
+        ),
+      'location': _iu1rtxjg.LocationEndpoint()
+        ..initialize(
+          server,
+          'location',
           null,
         ),
       'planner': _i3d44723.PlannerEndpoint()
@@ -899,6 +906,75 @@ class Endpoints extends _is.EndpointDispatch {
                         params['eventId'],
                         params['organizerId'],
                       ),
+        ),
+      },
+    );
+    connectors['location'] = _is.EndpointConnector(
+      name: 'location',
+      endpoint: endpoints['location']!,
+      methodConnectors: {
+        'getLocations': _is.MethodConnector(
+          name: 'getLocations',
+          params: {
+            'category': _is.ParameterDescription(
+              name: 'category',
+              type: _is.getType<String?>(),
+              nullable: true,
+            ),
+            'query': _is.ParameterDescription(
+              name: 'query',
+              type: _is.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['location'] as _iu1rtxjg.LocationEndpoint)
+                  .getLocations(
+                    session,
+                    category: params['category'],
+                    query: params['query'],
+                  ),
+        ),
+        'getLocationById': _is.MethodConnector(
+          name: 'getLocationById',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['location'] as _iu1rtxjg.LocationEndpoint)
+                  .getLocationById(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'getEventsForLocation': _is.MethodConnector(
+          name: 'getEventsForLocation',
+          params: {
+            'locationId': _is.ParameterDescription(
+              name: 'locationId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['location'] as _iu1rtxjg.LocationEndpoint)
+                  .getEventsForLocation(
+                    session,
+                    params['locationId'],
+                  ),
         ),
       },
     );

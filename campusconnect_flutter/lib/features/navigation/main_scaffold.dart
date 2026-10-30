@@ -8,6 +8,7 @@ import '../activity/activity_center_screen.dart';
 import '../copilot/campus_copilot_screen.dart';
 import '../events/events_screen.dart';
 import '../home/home_dashboard_screen.dart';
+import '../map/campus_map_screen.dart';
 import '../planner/campus_week_screen.dart';
 import '../profile/profile_screen.dart';
 import '../study_buddy/study_buddy_screen.dart';
@@ -122,6 +123,19 @@ class _MainScaffoldState extends State<MainScaffold> {
           ],
         ),
         actions: [
+          // Campus Map Action
+          IconButton(
+            icon: const Icon(Icons.map_outlined),
+            tooltip: 'IIT Delhi Campus Map',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CampusMapScreen(),
+                ),
+              );
+            },
+          ),
           // AI Copilot Action Pill
           Padding(
             padding: const EdgeInsets.only(right: 4),

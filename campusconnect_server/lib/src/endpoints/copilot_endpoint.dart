@@ -41,13 +41,137 @@ class CopilotEndpoint extends Endpoint {
       limit: 10,
     );
 
+    final allLocations = await CampusLocation.db.find(
+      session,
+      orderBy: (t) => t.name,
+    );
+
     final cards = <CopilotActionCard>[];
     String reply = '';
     String category = 'general';
     List<String> suggestedPrompts = [];
 
     // Query Intent Analysis
-    if (query.contains('week') ||
+    final isLocationQuery = query.contains('where is') ||
+        query.contains('where are') ||
+        query.contains('where to') ||
+        query.contains('location') ||
+        query.contains('map') ||
+        query.contains('how to reach') ||
+        query.contains('how do i find') ||
+        query.contains('find the') ||
+        query.contains('nearest') ||
+        query.contains('library') ||
+        query.contains('lhc') ||
+        query.contains('lecture hall') ||
+        query.contains('hostel') ||
+        query.contains('canteen') ||
+        query.contains('cafeteria') ||
+        query.contains('food') ||
+        query.contains('hospital') ||
+        query.contains('auditorium') ||
+        query.contains('dogra') ||
+        query.contains('bharti') ||
+        query.contains('sac') ||
+        query.contains('gate') ||
+        query.contains('sports') ||
+        query.contains('technopark');
+
+    if (isLocationQuery) {
+      category = 'location';
+      suggestedPrompts = [
+        'Where is Central Library?',
+        'How do I find Lecture Hall Complex?',
+        'Where is the nearest cafeteria?',
+        'Where is Dogra Hall?',
+      ];
+
+      // Search matching locations
+      final matchingLocations = allLocations.where((loc) {
+        final nameL = loc.name.toLowerCase();
+        final catL = loc.category.toLowerCase();
+        final blockL = loc.buildingBlock?.toLowerCase() ?? '';
+        final tagsL = loc.tags?.map((t) => t.toLowerCase()).toList() ?? [];
+
+        // Check if query contains location name or category or tag
+        if (query.contains(nameL) || nameL.contains(query)) return true;
+        if (query.contains(catL) || catL.contains(query)) return true;
+        if (blockL.isNotEmpty && (query.contains(blockL) || blockL.contains(query))) return true;
+        for (final tag in tagsL) {
+          if (query.contains(tag)) return true;
+        }
+
+        // Specific keyword checks
+        if (query.contains('library') && nameL.contains('library')) return true;
+        if ((query.contains('lhc') || query.contains('lecture hall')) && (nameL.contains('lecture') || nameL.contains('lhc'))) return true;
+        if ((query.contains('food') || query.contains('cafeteria') || query.contains('canteen') || query.contains('eat') || query.contains('coffee')) &&
+            (catL.contains('food') || nameL.contains('food') || nameL.contains('cafeteria') || nameL.contains('nescafe') || nameL.contains('canteen'))) return true;
+        if (query.contains('hostel') && catL.contains('hostel')) return true;
+        if (query.contains('hospital') && (nameL.contains('hospital') || catL.contains('health'))) return true;
+        if (query.contains('dogra') && nameL.contains('dogra')) return true;
+        if (query.contains('bharti') && nameL.contains('bharti')) return true;
+        if (query.contains('sac') && nameL.contains('sac')) return true;
+        if (query.contains('sports') && catL.contains('sports')) return true;
+        if (query.contains('gate') && catL.contains('gate')) return true;
+
+        return false;
+      }).toList();
+
+      if (matchingLocations.isNotEmpty) {
+        final primary = matchingLocations.first;
+        final buffer = StringBuffer();
+        buffer.writeln('### 📍 IIT Delhi Campus Location Guide');
+        buffer.writeln();
+        buffer.writeln('**${primary.name}** is located at **${primary.buildingBlock ?? primary.category}**.');
+        buffer.writeln();
+        buffer.writeln(primary.shortDescription);
+        buffer.writeln();
+        if (primary.openingHours != null) {
+          buffer.writeln('⏰ **Hours:** ${primary.openingHours}');
+        }
+        if (primary.accessibilityInfo != null) {
+          buffer.writeln('♿ **Accessibility:** ${primary.accessibilityInfo}');
+        }
+        if (primary.contactInfo != null) {
+          buffer.writeln('📞 **Contact:** ${primary.contactInfo}');
+        }
+
+        // Check for events happening at this location
+        final venueEvents = allEvents.where((e) =>
+            e.locationId == primary.id ||
+            e.venue.toLowerCase().contains(primary.name.toLowerCase())).toList();
+        if (venueEvents.isNotEmpty) {
+          buffer.writeln();
+          buffer.writeln('📅 **Upcoming Event Here:** [${venueEvents.first.title}] (${venueEvents.first.category})');
+        }
+
+        buffer.writeln();
+        buffer.writeln('Tap the **"View on Map"** card below to pinpoint this building on the interactive IIT Delhi Campus Map.');
+        reply = buffer.toString();
+
+        for (final loc in matchingLocations.take(3)) {
+          cards.add(
+            CopilotActionCard(
+              cardType: 'location',
+              title: loc.name,
+              subtitle: '${loc.buildingBlock ?? loc.category} • ${loc.openingHours ?? "Open Campus"}',
+              badge: loc.isVerified ? 'Verified Location' : 'Pending Verification',
+              referenceId: loc.id,
+              actionLabel: 'View on Map',
+              dataPayload: '${loc.latitude},${loc.longitude}',
+            ),
+          );
+        }
+      } else {
+        reply = '''### 📍 Location Not Found in Campus Records
+
+I searched the IIT Delhi database for **"$userQuery"**, but no exact facility or building record matched.
+
+**Tips:**
+* Try searching for **"Central Library"**, **"Lecture Hall Complex"**, **"Dogra Hall"**, **"Bharti Building"**, or **"IIT Hospital"**.
+* You can also open the **Campus Map** tab directly to browse all categorized IIT Delhi landmarks, hostels, and gates.''';
+      }
+    } else if (query.contains('week') ||
         query.contains('what should i do') ||
         query.contains('plan') ||
         query.contains('schedule') ||

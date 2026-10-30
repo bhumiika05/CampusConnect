@@ -3,10 +3,17 @@ import '../generated/protocol.dart';
 
 class SeedDataService {
   static Future<bool> seedIfEmpty(Session session, {bool force = false}) async {
+    // Ensure verified IIT Delhi locations are always populated
+    final locationCount = await CampusLocation.db.count(session);
+    if (locationCount == 0 && !force) {
+      session.log('Locations table is empty, seeding verified IIT Delhi landmarks...');
+      await _seedLocations(session);
+    }
+
     final profileCount = await StudentProfile.db.count(session);
     if (profileCount > 0 && !force) {
       session.log(
-        'Database already has $profileCount profiles, skipping seed.',
+        'Database already has $profileCount profiles, skipping profile/event seed.',
       );
       return false;
     }
@@ -47,6 +54,10 @@ class SeedDataService {
         where: (t) => t.id.notEquals(-1),
       );
       await StudyPreferences.db.deleteWhere(
+        session,
+        where: (t) => t.id.notEquals(-1),
+      );
+      await CampusLocation.db.deleteWhere(
         session,
         where: (t) => t.id.notEquals(-1),
       );
@@ -471,6 +482,16 @@ class SeedDataService {
       await StudyPreferences.db.insertRow(session, pref);
     }
 
+    session.log('Seeding IIT Delhi campus locations...');
+    final insertedLocations = await _seedLocations(session);
+
+    final dograHall = insertedLocations.firstWhere((l) => l.name.contains('Dogra Hall'));
+    final bhartiBuilding = insertedLocations.firstWhere((l) => l.name.contains('Bharti'));
+    final lhc = insertedLocations.firstWhere((l) => l.name.contains('Lecture Hall'));
+    final mainBuilding = insertedLocations.firstWhere((l) => l.name.contains('Main Building'));
+    final library = insertedLocations.firstWhere((l) => l.name.contains('Library'));
+    final sac = insertedLocations.firstWhere((l) => l.name.contains('Amphitheatre'));
+
     session.log('Seeding campus events...');
     // 7 rich, vibrant campus events across diverse categories (NO FORBIDDEN WORDS)
     final events = [
@@ -479,7 +500,8 @@ class SeedDataService {
         description:
             'A 24-hour collaborative sprint where student teams design, build, and showcase innovative software and hardware prototypes. Mentors, prizes, and industry judges included!',
         category: 'Competitions',
-        venue: 'Main Auditorium & Innovation Lab',
+        venue: 'Dogra Hall & Innovation Lab',
+        locationId: dograHall.id,
         startTime: now.add(const Duration(days: 3, hours: 9)),
         endTime: now.add(const Duration(days: 4, hours: 18)),
         organizer: 'Google Developer Student Club',
@@ -495,7 +517,8 @@ class SeedDataService {
         description:
             'Hands-on workshop building multimodal AI agents, LLM pipelines, and vision models with PyTorch. Laptops required.',
         category: 'Workshops',
-        venue: 'CS Seminar Hall B, Block 4',
+        venue: 'Bharti Building Lab 201',
+        locationId: bhartiBuilding.id,
         startTime: now.add(const Duration(days: 5, hours: 14)),
         endTime: now.add(const Duration(days: 5, hours: 17)),
         organizer: 'AI Research Society',
@@ -511,7 +534,8 @@ class SeedDataService {
         description:
             'Learn modern full-stack Dart development from scratch! Build real-time reactive mobile apps backed by PostgreSQL and Serverpod cloud architecture.',
         category: 'Workshops',
-        venue: 'Tech Park Lab 204',
+        venue: 'Lecture Hall Complex (LHC) Hall 101',
+        locationId: lhc.id,
         startTime: now.add(const Duration(days: 7, hours: 10)),
         endTime: now.add(const Duration(days: 7, hours: 15)),
         organizer: 'CampusConnect Developer Community',
@@ -527,7 +551,8 @@ class SeedDataService {
         description:
             'The pinnacle celebration of engineering creativity! Featuring battle bots, autonomous rover demonstrations, drone racing, and guest lectures from space scientists.',
         category: 'Tech Showcase',
-        venue: 'Central Campus Quadrangle',
+        venue: 'Main Building Quadrangle',
+        locationId: mainBuilding.id,
         startTime: now.add(const Duration(days: 12, hours: 10)),
         endTime: now.add(const Duration(days: 14, hours: 20)),
         organizer: 'Robotics & Automation Club',
@@ -543,7 +568,8 @@ class SeedDataService {
         description:
             'Final-year students and alumni share concrete strategies for tackling tech company interviews, resume building, and system design rounds.',
         category: 'Placement Prep',
-        venue: 'Virtual Zoom & Hall 1',
+        venue: 'Lecture Hall Complex (LHC) Hall 102',
+        locationId: lhc.id,
         startTime: now.add(const Duration(days: 2, hours: 18)),
         endTime: now.add(const Duration(days: 2, hours: 20)),
         organizer: 'Training & Placement Cell',
@@ -559,7 +585,8 @@ class SeedDataService {
         description:
             'Interactive clinic guiding beginners through their first pull request on major open source repositories, bug triaging, and documentation writing.',
         category: 'Seminars',
-        venue: 'Central Library Conference Room',
+        venue: 'Central Library Conference Hall',
+        locationId: library.id,
         startTime: now.add(const Duration(days: 9, hours: 11)),
         endTime: now.add(const Duration(days: 9, hours: 13)),
         organizer: 'Open Source Coalition',
@@ -575,7 +602,8 @@ class SeedDataService {
         description:
             'Unwind after midterm exams with live acoustic bands, street dance battles, food trucks, and open mic performances by talented campus musicians.',
         category: 'Cultural',
-        venue: 'Amphitheatre Grounds',
+        venue: 'Student Activity Center (SAC) Amphitheatre',
+        locationId: sac.id,
         startTime: now.add(const Duration(days: 16, hours: 18)),
         endTime: now.add(const Duration(days: 16, hours: 22)),
         organizer: 'Student Cultural Committee',
@@ -926,5 +954,360 @@ class SeedDataService {
 
     session.log('Database seeding successfully completed!');
     return true;
+  }
+
+  /// Seeds realistic, verified IIT Delhi campus locations (Hauz Khas, New Delhi)
+  static Future<List<CampusLocation>> _seedLocations(Session session) async {
+    final existing = await CampusLocation.db.find(session);
+    if (existing.isNotEmpty) return existing;
+
+    final rawLocations = [
+      CampusLocation(
+        name: 'Central Library',
+        category: 'Central Library',
+        shortDescription:
+            'Three-story modern library housing over 300,000 volumes, e-resource labs, and quiet study zones.',
+        latitude: 28.54462,
+        longitude: 77.19278,
+        buildingBlock: 'Central Library Building',
+        openingHours: '8:00 AM - 2:00 AM (Daily)',
+        contactInfo: '+91-11-2659-1445',
+        website: 'https://library.iitd.ac.in',
+        accessibilityInfo:
+            'Wheelchair ramp at front entrance, elevators to 2nd & 3rd floors',
+        isVerified: true,
+        tags: [
+          'books',
+          'study',
+          'journals',
+          'reading room',
+          'quiet',
+          'research'
+        ],
+      ),
+      CampusLocation(
+        name: 'Main Building (Block IV / Administrative Complex)',
+        category: 'Main Building',
+        shortDescription:
+            "Central administrative headquarters, director's office, and main academic corridor at IIT Delhi.",
+        latitude: 28.54504,
+        longitude: 77.19262,
+        buildingBlock: 'Block IV',
+        openingHours: '9:00 AM - 5:30 PM (Mon-Fri)',
+        contactInfo: '+91-11-2659-1000',
+        website: 'https://home.iitd.ac.in',
+        accessibilityInfo: 'North ramp access, Braille signage, lifts available',
+        isVerified: true,
+        tags: ['administration', 'director', 'dean', 'registrar', 'office'],
+      ),
+      CampusLocation(
+        name: 'Lecture Hall Complex (LHC)',
+        category: 'Lecture Hall Complex',
+        shortDescription:
+            'Multi-tiered lecture theatres equipped with smart projection systems for foundational institute courses.',
+        latitude: 28.54635,
+        longitude: 77.19140,
+        buildingBlock: 'North Campus LHC',
+        openingHours: '8:00 AM - 8:00 PM (Class hours)',
+        contactInfo: '+91-11-2659-1700',
+        accessibilityInfo:
+            'All ground theatres step-free; elevators for upper floors',
+        isVerified: true,
+        tags: ['lectures', 'classes', 'theatres', 'academics', 'exam', 'lhc'],
+      ),
+      CampusLocation(
+        name: 'Dogra Hall (Main Auditorium)',
+        category: 'Auditorium & Seminar Halls',
+        shortDescription:
+            'Iconic hyperbolic paraboloid auditorium host to institute convocations, guest lectures, and cultural fests.',
+        latitude: 28.54528,
+        longitude: 77.19245,
+        buildingBlock: 'Main Building Forecourt',
+        openingHours: 'During scheduled events & symposiums',
+        contactInfo: '+91-11-2659-1720',
+        accessibilityInfo: 'Step-free access from the academic corridor',
+        isVerified: true,
+        tags: [
+          'auditorium',
+          'convocation',
+          'cultural',
+          'guest lecture',
+          'talk',
+          'dogra hall'
+        ],
+      ),
+      CampusLocation(
+        name: 'Bharti Building (School of IT & CSE)',
+        category: 'Academic Blocks',
+        shortDescription:
+            'Hub for Computer Science & Engineering, telecommunication, and high-performance computing labs.',
+        latitude: 28.54572,
+        longitude: 77.19183,
+        buildingBlock: 'Bharti School',
+        openingHours: '8:30 AM - 7:00 PM (Labs 24/7)',
+        contactInfo: '+91-11-2659-6000',
+        website: 'https://cse.iitd.ac.in',
+        accessibilityInfo: 'Elevator access on all wings, accessible restrooms',
+        isVerified: true,
+        tags: [
+          'cse',
+          'computer science',
+          'it',
+          'telecom',
+          'coding lab',
+          'bharti'
+        ],
+      ),
+      CampusLocation(
+        name: 'Block II & III (Mechanical & Chemical Engineering)',
+        category: 'Academic Blocks',
+        shortDescription:
+            'Academic blocks housing mechanical, chemical, and materials science departments with experimental labs.',
+        latitude: 28.54430,
+        longitude: 77.19150,
+        buildingBlock: 'South Academic Corridor',
+        openingHours: '8:30 AM - 6:00 PM',
+        accessibilityInfo: 'Ground level ramps and service elevators',
+        isVerified: true,
+        tags: [
+          'mechanical',
+          'chemical',
+          'workshops',
+          'labs',
+          'block 2',
+          'block 3'
+        ],
+      ),
+      CampusLocation(
+        name: 'Student Activity Center (SAC)',
+        category: 'Other Facilities',
+        shortDescription:
+            'Epicenter of student clubs, board rooms, indoor sports, music room, and open-air amphitheatre.',
+        latitude: 28.54695,
+        longitude: 77.19062,
+        buildingBlock: 'SAC Complex',
+        openingHours: '6:00 AM - 11:00 PM',
+        contactInfo: '+91-11-2659-6900',
+        accessibilityInfo:
+            'Full ground level access to open amphitheatre and courts',
+        isVerified: true,
+        tags: [
+          'clubs',
+          'music',
+          'dance',
+          'indoor sports',
+          'student lounge',
+          'sac'
+        ],
+      ),
+      CampusLocation(
+        name: 'Nescafe & Central Food Plaza',
+        category: 'Cafeteria & Food Outlets',
+        shortDescription:
+            'Popular student gathering spot serving hot coffee, snacks, sandwiches, and refreshments.',
+        latitude: 28.54480,
+        longitude: 77.19325,
+        buildingBlock: 'Library Lawns',
+        openingHours: '8:00 AM - 1:00 AM',
+        contactInfo: '+91-11-2659-1800',
+        accessibilityInfo: 'Open outdoor seating with ground level access',
+        isVerified: true,
+        tags: ['coffee', 'snacks', 'food', 'maggi', 'canteen', 'nescafe'],
+      ),
+      CampusLocation(
+        name: 'Staff Canteen / Main Cafeteria',
+        category: 'Cafeteria & Food Outlets',
+        shortDescription:
+            'Multi-cuisine cafeteria offering affordable meals, thalis, and south Indian breakfast.',
+        latitude: 28.54415,
+        longitude: 77.19210,
+        buildingBlock: 'Near Block IV',
+        openingHours: '8:30 AM - 9:30 PM',
+        contactInfo: '+91-11-2659-1810',
+        accessibilityInfo: 'Wheelchair accessible ground floor dining hall',
+        isVerified: true,
+        tags: ['lunch', 'thali', 'breakfast', 'canteen', 'dining', 'cafeteria'],
+      ),
+      CampusLocation(
+        name: 'Nilgiri Hostel',
+        category: 'Student Hostels',
+        shortDescription:
+            'Senior undergraduate student residence hall with mess, common room, and reading hall.',
+        latitude: 28.54755,
+        longitude: 77.18950,
+        buildingBlock: 'West Hostel Sector',
+        openingHours: '24/7 for residents',
+        contactInfo: '+91-11-2659-6801',
+        accessibilityInfo: 'Ground floor rooms with ramp entrance',
+        isVerified: true,
+        tags: ['hostel', 'residence', 'boys hostel', 'nilgiri'],
+      ),
+      CampusLocation(
+        name: 'Kumaon Hostel',
+        category: 'Student Hostels',
+        shortDescription:
+            'Student residence hall featuring recreational facilities, courtyard, and solar-assisted heating.',
+        latitude: 28.54812,
+        longitude: 77.18885,
+        buildingBlock: 'West Hostel Sector',
+        openingHours: '24/7 for residents',
+        contactInfo: '+91-11-2659-6802',
+        accessibilityInfo: 'Ground floor accessible mess and common hall',
+        isVerified: true,
+        tags: ['hostel', 'residence', 'boys hostel', 'kumaon'],
+      ),
+      CampusLocation(
+        name: 'Girnar Hostel',
+        category: 'Student Hostels',
+        shortDescription:
+            'Modern multistory student hostel with study rooms, high-speed Wi-Fi, and mess hall.',
+        latitude: 28.54780,
+        longitude: 77.18780,
+        buildingBlock: 'West Hostel Sector',
+        openingHours: '24/7 for residents',
+        contactInfo: '+91-11-2659-6803',
+        accessibilityInfo: 'Elevator access to all residential wings',
+        isVerified: true,
+        tags: ['hostel', 'residence', 'girnar', 'new hostel'],
+      ),
+      CampusLocation(
+        name: 'Kailash Hostel',
+        category: 'Student Hostels',
+        shortDescription:
+            "Women's residence hall situated near the east campus with dedicated sports facilities.",
+        latitude: 28.54350,
+        longitude: 77.19455,
+        buildingBlock: 'East Hostel Sector',
+        openingHours: '24/7 for residents',
+        contactInfo: '+91-11-2659-6810',
+        accessibilityInfo: 'Ramp access at main gate and mess hall',
+        isVerified: true,
+        tags: ['hostel', 'girls hostel', 'residence', 'kailash'],
+      ),
+      CampusLocation(
+        name: 'IIT Hospital & Emergency Unit',
+        category: 'Other Facilities',
+        shortDescription:
+            'Full-service on-campus healthcare center with 24/7 emergency unit, pharmacy, and OPD.',
+        latitude: 28.54390,
+        longitude: 77.19520,
+        buildingBlock: 'Hospital Complex',
+        openingHours: '24/7 Emergency; OPD 8:30 AM - 6:00 PM',
+        contactInfo: '+91-11-2659-1500',
+        accessibilityInfo:
+            'Wheelchair accessible ambulance bay, ramps, elevator',
+        isVerified: true,
+        tags: [
+          'hospital',
+          'health',
+          'doctor',
+          'medicine',
+          'emergency',
+          'opd',
+          'medical'
+        ],
+      ),
+      CampusLocation(
+        name: 'Main Sports Grounds & Swimming Pool',
+        category: 'Sports Facilities',
+        shortDescription:
+            'Cricket and football grounds, 400m synthetic track, Olympic-sized swimming pool, and tennis courts.',
+        latitude: 28.54605,
+        longitude: 77.18920,
+        buildingBlock: 'Sports Complex',
+        openingHours: '6:00 AM - 9:30 AM & 4:30 PM - 8:30 PM',
+        contactInfo: '+91-11-2659-6950',
+        accessibilityInfo:
+            'Ground-level path connecting cricket pavilion and synthetic track',
+        isVerified: true,
+        tags: [
+          'sports',
+          'cricket',
+          'football',
+          'swimming',
+          'tennis',
+          'gym',
+          'ground'
+        ],
+      ),
+      CampusLocation(
+        name: 'Gate 1 (Main Gate - Hauz Khas)',
+        category: 'Campus Gates',
+        shortDescription:
+            'Primary institute entrance connecting IIT Delhi to Outer Ring Road and Hauz Khas Metro station.',
+        latitude: 28.54305,
+        longitude: 77.19355,
+        buildingBlock: 'South Campus Perimeter',
+        openingHours: '24/7 Security Checkpoint',
+        contactInfo: '+91-11-2659-1001',
+        accessibilityInfo: 'Wide pedestrian walkway and boom barrier vehicle lane',
+        isVerified: true,
+        tags: [
+          'gate',
+          'entry',
+          'exit',
+          'metro',
+          'hauz khas',
+          'auto',
+          'gate 1'
+        ],
+      ),
+      CampusLocation(
+        name: 'Gate 2 (SDA Market Side)',
+        category: 'Campus Gates',
+        shortDescription:
+            'Northern gate providing convenient access towards Safdarjung Development Area and market.',
+        latitude: 28.54885,
+        longitude: 77.19505,
+        buildingBlock: 'North Campus Perimeter',
+        openingHours: '6:00 AM - 11:00 PM',
+        contactInfo: '+91-11-2659-1002',
+        accessibilityInfo: 'Pedestrian entrance with paved pathway',
+        isVerified: true,
+        tags: ['gate', 'sda', 'market', 'entry', 'north gate', 'gate 2'],
+      ),
+      CampusLocation(
+        name: 'Research & Innovation Park (Technopark)',
+        category: 'Academic Blocks',
+        shortDescription:
+            'State-of-the-art incubation and deep tech research park housing startup incubators and industry labs.',
+        latitude: 28.54225,
+        longitude: 77.19150,
+        buildingBlock: 'Research Park Complex',
+        openingHours: '8:00 AM - 8:00 PM',
+        contactInfo: '+91-11-2659-7000',
+        website: 'https://technopark.iitd.ac.in',
+        accessibilityInfo:
+            'Full universal accessibility with automatic elevators and ramps',
+        isVerified: true,
+        tags: [
+          'incubator',
+          'startup',
+          'research park',
+          'technopark',
+          'industry',
+          'innovation'
+        ],
+      ),
+      CampusLocation(
+        name: 'Amphitheatre (SAC)',
+        category: 'Auditorium & Seminar Halls',
+        shortDescription:
+            'Open-air cultural amphitheatre hosting drama, acoustic performances, and student council meets.',
+        latitude: 28.54705,
+        longitude: 77.19045,
+        buildingBlock: 'SAC Complex',
+        openingHours: 'Open access; events as scheduled',
+        accessibilityInfo: 'Tiered seating with ramp access from courtyard',
+        isVerified: true,
+        tags: ['amphitheatre', 'cultural', 'open air', 'performances', 'stage'],
+      ),
+    ];
+
+    final inserted = <CampusLocation>[];
+    for (final loc in rawLocations) {
+      inserted.add(await CampusLocation.db.insertRow(session, loc));
+    }
+    return inserted;
   }
 }

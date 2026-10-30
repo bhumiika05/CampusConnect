@@ -15,6 +15,8 @@ import 'package:campusconnect_client/src/protocol/activity_notification.dart'
     as _iq707l6z;
 import 'package:campusconnect_client/src/protocol/campus_event.dart'
     as _iq3u3g5y;
+import 'package:campusconnect_client/src/protocol/campus_location.dart'
+    as _i7e4p0ip;
 import 'package:campusconnect_client/src/protocol/collaboration_request.dart'
     as _iqiqy8rh;
 import 'package:campusconnect_client/src/protocol/event_registration.dart'
@@ -34,6 +36,7 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'activity_notification.dart' as _irw9wpf5;
 import 'campus_event.dart' as _ieh998j0;
+import 'campus_location.dart' as _ib8flzxr;
 import 'collaboration_request.dart' as _irwixkwz;
 import 'copilot_action_card.dart' as _isfb8n60;
 import 'copilot_response.dart' as _i5r7h6ax;
@@ -50,6 +53,7 @@ import 'study_request.dart' as _i2p0wucy;
 import 'weekly_planner_summary.dart' as _iwrx71z1;
 export 'activity_notification.dart';
 export 'campus_event.dart';
+export 'campus_location.dart';
 export 'collaboration_request.dart';
 export 'copilot_action_card.dart';
 export 'copilot_response.dart';
@@ -106,6 +110,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ieh998j0.CampusEvent) {
       return _ieh998j0.CampusEvent.fromJson(data) as T;
     }
+    if (t == _ib8flzxr.CampusLocation) {
+      return _ib8flzxr.CampusLocation.fromJson(data) as T;
+    }
     if (t == _irwixkwz.CollaborationRequest) {
       return _irwixkwz.CollaborationRequest.fromJson(data) as T;
     }
@@ -156,6 +163,10 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_ieh998j0.CampusEvent?>()) {
       return (data != null ? _ieh998j0.CampusEvent.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ib8flzxr.CampusLocation?>()) {
+      return (data != null ? _ib8flzxr.CampusLocation.fromJson(data) : null)
+          as T;
     }
     if (t == _isc.getType<_irwixkwz.CollaborationRequest?>()) {
       return (data != null
@@ -218,6 +229,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _isc.getType<List<String>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
     }
     if (t == List<_isfb8n60.CopilotActionCard>) {
       return (data as List)
@@ -282,6 +299,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i7e4p0ip.CampusLocation>) {
+      return (data as List)
+              .map((e) => deserialize<_i7e4p0ip.CampusLocation>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i7gx854o.StudentProfile>) {
       return (data as List)
               .map((e) => deserialize<_i7gx854o.StudentProfile>(e))
@@ -319,6 +342,7 @@ class Protocol extends _isc.SerializationManager {
     return switch (type) {
       _irw9wpf5.ActivityNotification => 'ActivityNotification',
       _ieh998j0.CampusEvent => 'CampusEvent',
+      _ib8flzxr.CampusLocation => 'CampusLocation',
       _irwixkwz.CollaborationRequest => 'CollaborationRequest',
       _isfb8n60.CopilotActionCard => 'CopilotActionCard',
       _i5r7h6ax.CopilotResponse => 'CopilotResponse',
@@ -354,6 +378,8 @@ class Protocol extends _isc.SerializationManager {
         return 'ActivityNotification';
       case _ieh998j0.CampusEvent():
         return 'CampusEvent';
+      case _ib8flzxr.CampusLocation():
+        return 'CampusLocation';
       case _irwixkwz.CollaborationRequest():
         return 'CollaborationRequest';
       case _isfb8n60.CopilotActionCard():
@@ -409,6 +435,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'CampusEvent') {
       return deserialize<_ieh998j0.CampusEvent>(data['data']);
+    }
+    if (dataClassName == 'CampusLocation') {
+      return deserialize<_ib8flzxr.CampusLocation>(data['data']);
     }
     if (dataClassName == 'CollaborationRequest') {
       return deserialize<_irwixkwz.CollaborationRequest>(data['data']);

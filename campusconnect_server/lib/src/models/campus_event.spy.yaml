@@ -5,6 +5,7 @@ fields:
   description: String
   category: String
   venue: String
+  locationId: int?
   startTime: DateTime
   endTime: DateTime
   organizer: String

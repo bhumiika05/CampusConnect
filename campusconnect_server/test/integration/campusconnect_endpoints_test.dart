@@ -428,6 +428,50 @@ void main() {
         expect(response.recommendedCards, isNotEmpty);
         expect(response.suggestedPrompts, isNotEmpty);
       });
+
+      test('13. Campus Locations: fetch, search, filter by category and id', () async {
+        await endpoints.seed.seedInitialData(sessionBuilder, force: false);
+
+        final allLocations = await endpoints.location.getLocations(sessionBuilder);
+        expect(allLocations, isNotEmpty);
+
+        final libraryList = await endpoints.location.getLocations(
+          sessionBuilder,
+          category: 'Central Library',
+        );
+        expect(libraryList, isNotEmpty);
+        expect(libraryList.first.name, equals('Central Library'));
+        expect(libraryList.first.isVerified, isTrue);
+
+        final bhartiSearch = await endpoints.location.getLocations(
+          sessionBuilder,
+          query: 'Bharti',
+        );
+        expect(bhartiSearch, isNotEmpty);
+        expect(bhartiSearch.first.name, contains('Bharti'));
+
+        final byId = await endpoints.location.getLocationById(
+          sessionBuilder,
+          libraryList.first.id!,
+        );
+        expect(byId, isNotNull);
+        expect(byId!.name, equals('Central Library'));
+      });
+
+      test('14. AI Campus Copilot: location queries return grounded venue directions and action card', () async {
+        final response = await endpoints.copilot.askCopilot(
+          sessionBuilder,
+          studentA.id!,
+          'Where is the Central Library?',
+        );
+
+        expect(response.category, equals('location'));
+        expect(response.reply, contains('Central Library'));
+        expect(
+          response.recommendedCards.any((c) => c.cardType == 'location'),
+          isTrue,
+        );
+      });
     },
     rollbackDatabase: RollbackDatabase.disabled,
   );

@@ -4,6 +4,7 @@ import '../../client.dart';
 import '../../core/services/session_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../events/event_details_screen.dart';
+import '../map/campus_map_screen.dart';
 import '../study_buddy/widgets/send_study_request_dialog.dart';
 
 class CampusCopilotScreen extends StatefulWidget {
@@ -265,6 +266,18 @@ class _CampusCopilotScreenState extends State<CampusCopilotScreen> {
             );
           }
         }
+        break;
+
+      case 'location':
+        if (card.referenceId == null) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CampusMapScreen(
+              initialLocationId: card.referenceId,
+            ),
+          ),
+        );
         break;
     }
   }

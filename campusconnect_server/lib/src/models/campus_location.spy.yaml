@@ -1,0 +1,18 @@
+class: CampusLocation
+table: campus_location
+fields:
+  name: String
+  category: String
+  shortDescription: String
+  latitude: double
+  longitude: double
+  buildingBlock: String?
+  openingHours: String?
+  contactInfo: String?
+  website: String?
+  accessibilityInfo: String?
+  isVerified: bool
+  tags: List<String>?
+indexes:
+  campus_location_category_idx:
+    fields: category

@@ -6,6 +6,7 @@ import '../../core/services/session_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_badge.dart';
 import '../../core/widgets/app_button.dart';
+import '../map/campus_map_screen.dart';
 
 class EventDetailsScreen extends StatefulWidget {
   final CampusEvent event;
@@ -343,6 +344,55 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CampusMapScreen(
+                                  initialLocationId: _event.locationId,
+                                  initialSearchQuery: _event.venue,
+                                ),
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondaryPurpleSoft,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: AppColors.secondaryPurple.withValues(
+                                  alpha: 0.25,
+                                ),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.map_rounded,
+                                  size: 14,
+                                  color: AppColors.secondaryPurple,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'View on Map',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.secondaryPurple,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

@@ -20,6 +20,7 @@ abstract class CampusEvent
     required this.description,
     required this.category,
     required this.venue,
+    this.locationId,
     required this.startTime,
     required this.endTime,
     required this.organizer,
@@ -37,6 +38,7 @@ abstract class CampusEvent
     required String description,
     required String category,
     required String venue,
+    int? locationId,
     required DateTime startTime,
     required DateTime endTime,
     required String organizer,
@@ -55,6 +57,7 @@ abstract class CampusEvent
       description: jsonSerialization['description'] as String,
       category: jsonSerialization['category'] as String,
       venue: jsonSerialization['venue'] as String,
+      locationId: jsonSerialization['locationId'] as int?,
       startTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['startTime'],
       ),
@@ -88,6 +91,8 @@ abstract class CampusEvent
 
   String venue;
 
+  int? locationId;
+
   DateTime startTime;
 
   DateTime endTime;
@@ -118,6 +123,7 @@ abstract class CampusEvent
     String? description,
     String? category,
     String? venue,
+    int? locationId,
     DateTime? startTime,
     DateTime? endTime,
     String? organizer,
@@ -137,6 +143,7 @@ abstract class CampusEvent
       'description': description,
       'category': category,
       'venue': venue,
+      if (locationId != null) 'locationId': locationId,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       'organizer': organizer,
@@ -158,6 +165,7 @@ abstract class CampusEvent
       'description': description,
       'category': category,
       'venue': venue,
+      if (locationId != null) 'locationId': locationId,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       'organizer': organizer,
@@ -207,6 +215,7 @@ class _CampusEventImpl extends CampusEvent {
     required String description,
     required String category,
     required String venue,
+    int? locationId,
     required DateTime startTime,
     required DateTime endTime,
     required String organizer,
@@ -222,6 +231,7 @@ class _CampusEventImpl extends CampusEvent {
          description: description,
          category: category,
          venue: venue,
+         locationId: locationId,
          startTime: startTime,
          endTime: endTime,
          organizer: organizer,
@@ -243,6 +253,7 @@ class _CampusEventImpl extends CampusEvent {
     String? description,
     String? category,
     String? venue,
+    Object? locationId = _Undefined,
     DateTime? startTime,
     DateTime? endTime,
     String? organizer,
@@ -259,6 +270,7 @@ class _CampusEventImpl extends CampusEvent {
       description: description ?? this.description,
       category: category ?? this.category,
       venue: venue ?? this.venue,
+      locationId: locationId is int? ? locationId : this.locationId,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       organizer: organizer ?? this.organizer,
@@ -292,6 +304,11 @@ class CampusEventUpdateTable extends _is.UpdateTable<CampusEventTable> {
 
   _is.ColumnValue<String, String> venue(String value) => _is.ColumnValue(
     table.venue,
+    value,
+  );
+
+  _is.ColumnValue<int, int> locationId(int? value) => _is.ColumnValue(
+    table.locationId,
     value,
   );
 
@@ -363,6 +380,10 @@ class CampusEventTable extends _is.Table<int?> {
       'venue',
       this,
     );
+    locationId = _is.ColumnInt(
+      'locationId',
+      this,
+    );
     startTime = _is.ColumnDateTime(
       'startTime',
       this,
@@ -411,6 +432,8 @@ class CampusEventTable extends _is.Table<int?> {
 
   late final _is.ColumnString venue;
 
+  late final _is.ColumnInt locationId;
+
   late final _is.ColumnDateTime startTime;
 
   late final _is.ColumnDateTime endTime;
@@ -436,6 +459,7 @@ class CampusEventTable extends _is.Table<int?> {
     description,
     category,
     venue,
+    locationId,
     startTime,
     endTime,
     organizer,
